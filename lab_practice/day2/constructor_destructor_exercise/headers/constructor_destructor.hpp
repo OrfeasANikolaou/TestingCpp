@@ -4,7 +4,7 @@
 class A{
 	public:
 		A();
-		A(int64_t X, int64_t Y);
+		A(int64_t X, int64_t Y = 19);
 		~A();
 		// return outputstream
 		// name of function?

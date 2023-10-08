@@ -12,7 +12,7 @@ A::A() : x(0), y(0){
 	cout << "Constructor for A without assigned values." << endl;
 */
 }
-A::A(int64_t X, int64_t Y = 19) : x(X), y(Y) {}
+A::A(int64_t X, int64_t Y) : x(X), y(Y) {}
 /*{
 	using namespace std;
 	this->x = X;

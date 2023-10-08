@@ -6,7 +6,7 @@ int main(void){
 	A prokathorismeno;
 	//A test_pente[] = {A(4), };
 	//A x(4);
-	A pente[] = {A(), A(4, 4), A(5, 1), A(100, 100), A(9, 6), };
+	A pente[] = {A(), A(4), A(5, 1), A(100, 100), A(9, 6), };
 	cout << "default: " << prokathorismeno << endl;
 	for (size_t i = 0; i < 5; ++i)
 		cout << "pente[" << i << "] = " << pente[i] << endl;
