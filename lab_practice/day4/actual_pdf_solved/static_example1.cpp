@@ -6,6 +6,7 @@ class MyClass {
 
     public: 
         // στατικό μέλος δεδομένων
+				// THIS CAN BE SHOWN IN MAIN WITH THE NAME OF THE CLASS
         static int a;
         
         // default constructor
@@ -16,6 +17,7 @@ class MyClass {
         }
         
         // στατική συνάρτηση μέλος κλάσης
+				// THIS CAN BE CALLED IN MAIN WITH THE NAME OF THE CLASS
         static void print_number_of_objects(){
             std::cout << "Number of instances: " << a << std::endl;
         }
