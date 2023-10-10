@@ -29,7 +29,7 @@ int MyClass::a = 0;
 int main(){
     MyClass obj1(5), obj2(7);
     MyClass objs[10];
-    MyClass::print_number_of_objects();
+    obj1.print_number_of_objects();
     std::cout << "# of instances: " << MyClass::a << std::endl;
     return 0;
 }
