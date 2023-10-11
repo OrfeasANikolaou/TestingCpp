@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -Werror -Wshadow -Wstrict-aliasing -Wstrict-overflow -pedantic
+CFLAGS = -Wall -Werror -Wextra -Wshadow -Wstrict-aliasing -Wstrict-overflow -pedantic
 S = ./source/
 ALL = $(S)master.cpp $(S)object_circle.cpp
 OUT_NAME = object_circle
