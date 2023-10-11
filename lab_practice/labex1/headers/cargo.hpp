@@ -11,7 +11,7 @@ class cargo{
 		double get_weight(void);
 		void show(void) const;
 		void make_safe(void);
-	 static size_t count;	
+		static size_t count;
 	private:
 		int id;
 		std::string destination;
