@@ -1,8 +1,9 @@
 #include "./../headers/cargo.hpp"
 #include <iostream>
 #include <utility>
+#include <algorithm>
+
 using namespace std::rel_ops;
- 
 size_t cargo::count = 0;	
 int main(void){
 	using std::cout;
@@ -14,20 +15,25 @@ int main(void){
 									cargo(5, "Athens" , 1100, false), };
 	for (size_t i = 0; i < 5; ++i){
 		arr[i].make_safe();
-		cout << "--------------------------" << endl << 
-						arr[i] << endl;
 	}
-	/*
-	 for (auto c : arr){
-		c.make_safe();
-	}
+/*		THIS WORKS, IT'S JUST COMMENTED BECAUSE IT HAS NO REASON TO EXIST
+ *		IT'S JUST TO SHOW THAT THE CMP OPERATORS ARE OVERLOADED CORRECTLY
+ *
+	if (arr[0] == arr[1]) cout << "same" << endl;
+	if (arr[0] != arr[1]) cout << "different" << endl;
+	if (arr[0] < arr[1]) cout << "smaller" << endl;
+	if (arr[1] > arr[0]) cout << "bigger" << endl;
+	cout << endl;
+  *
 	*/
-	cout <<  endl;
+
+	std::sort(&arr[0], &arr[5] );
 	for (cargo c : arr){
-		cout << "---------------------------" << endl <<
-						c << endl;
+		cout << "---------------------------" << endl; 
+						c.show();
 	}
-	cout << endl << endl;
+	cout << endl;
+
 	cout << "Number of instances: " << cargo::count << endl;	
 	return 0;
 }

@@ -37,5 +37,5 @@ void cargo::set_weight(double const w) { this->weight = w; }
 double cargo::get_weight(void) { return this->weight; }
 
 //other functions
-void cargo::show(void) const { std::cout << *this; }
+void cargo::show(void) const { std::cout << *this << std::endl; }
 																	
