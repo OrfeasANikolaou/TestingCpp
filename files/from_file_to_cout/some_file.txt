@@ -1,0 +1,6 @@
+This is some_file.txt
+This is some example text.
+The next two lines will be empty lines.
+
+
+And here I continue writing text.
