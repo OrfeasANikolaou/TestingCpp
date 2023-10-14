@@ -44,7 +44,7 @@ int main(void){
 	getch(); clear();
 	
 	refresh(); 
-	getch();
+	getchar();
 	endwin();
 	//free memory and end ncurses
 	return 0;
