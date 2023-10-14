@@ -1,6 +1,5 @@
 #include <ncurses.h>
 #include <ncurses/curses.h>
-#include <cstdlib>
 WINDOW* make_ok_layout(int const, int const);
 int main(void){
 	initscr();
