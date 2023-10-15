@@ -5,7 +5,7 @@ int main (void){
 	initscr ();
 	raw ();
 	noecho ();
-	cbreak ();
+//	cbreak ();
 	
 	int y, x;
 	getmaxyx (stdscr, y, x);
