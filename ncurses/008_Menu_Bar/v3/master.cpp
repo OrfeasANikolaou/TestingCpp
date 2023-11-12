@@ -1,5 +1,6 @@
 #include <ncurses/curses.h>
 #include "menu.hpp"
+void blue_background_smiley_face(void);
 
 int main (void){
 
@@ -21,6 +22,8 @@ int main (void){
     Menu ("Misc", 'm', menu_misc, sizeof (menu_misc) / sizeof (std::string)),
   };
 
+	blue_background_smiley_face();
+
   MenuBar menu_bar (win, menus, 3);
   menu_bar.draw();
   int ch;
@@ -34,4 +37,11 @@ int main (void){
   return 0;
 }
 
+void blue_background_smiley_face(void){
 
+	for (int i = 0; i < LINES; ++i){
+		move (i, 0);	
+		chgat (-1, A_NORMAL, 1, NULL);
+	}
+	refresh();
+}
