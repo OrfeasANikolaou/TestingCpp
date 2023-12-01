@@ -1,11 +1,13 @@
 #include <iostream>
 #include <vector>
 #include <utility> // std::rel_ops
+#include <sstream>
 class player{
 	friend bool operator<(player, player);
 	friend bool operator==(player, player);
 	public:
 		player(std::string, size_t);
+		operator std::string() const;
 	private:
 		std::string name;
 		size_t time_played; // cannot be negative therefore u64
@@ -17,9 +19,19 @@ size_t count(std::vector<T> vec);
 int main(void){
 	std::vector<int> int_vec = { 4,0,5,3,2,0,0,0,0, };
 	std::vector<player> p_vec = {player("p1", 50), player("p2", 1230), player("p3", 1230)};
+	
+	std::cout << "Times the smallest number appeared (integer): " << count(int_vec) << std::endl; 
+	std::cout << "Times the smallest number appeared (player): " << count(p_vec) << std::endl;
 
-	std::cout << count(int_vec) << std::endl; 
-	std::cout << count(p_vec) << std::endl;
+	std::cout << "PRINTING VECTOR OF INTEGERS" << std::endl;
+	for (auto x : int_vec){
+		std::cout << x << std::endl;
+	}
+	
+	std::cout << "PRINTING VECTOR OF PLAYERS" << std::endl;
+	for (auto x : p_vec){
+		std::cout << std::string(x) << std:: endl;
+	}
 
 	return 0;
 }
@@ -52,6 +64,12 @@ bool operator==(player x, player y){
 	return x.time_played == y.time_played;
 }
 
+/* member functions --> type conversions */
+player::operator std::string() const{
+	std::stringstream ss;
+	ss << this->name << "-" << this->time_played;
+	return ss.str();
+}
 
 /* member functions --> constructors */
 player::player(std::string n, size_t tp) : name(n), time_played(tp) {}
