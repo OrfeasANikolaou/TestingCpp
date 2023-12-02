@@ -46,8 +46,9 @@ int main(void){
 	std::cout << std::string(acc1) << std::endl << 
 							 std::string(acc2) << std::endl <<
 							 std::string(acc3) << std::endl;
-	if (acc2 < acc3) { std::cout << "Ken Lay's first account has less balance" << std::endl; }
-	else { std::cout << "Ken Lay's second acount has less balance" << std::endl; }	
+	std::cout << "-------HAS LESS (KEN LAY)------" << std::endl;
+	if (acc2 < acc3) { std::cout << std::string(acc2) << std::endl; }
+	else { std::cout << std::string(acc3) << std::endl; }	
 	return 0;
 }
 
