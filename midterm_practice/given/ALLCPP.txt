@@ -1,0 +1,1934 @@
+#include <cmath>
+#include <iostream>
+#include <ostream>
+
+class sphere
+{
+private:
+    double radius;
+
+public:
+    sphere(double r) : radius(r) {}
+
+    double get_radius()
+    {
+        return radius;
+    }
+
+    void set_radius(double r)
+    {
+        radius = r;
+    }
+
+    double get_volume()
+    {
+        return 4.0 / 3.0 * 3.1415 * pow(radius, 3);
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const sphere &a_sphere)
+    {
+        os << "RADIUS: " << a_sphere.radius;
+        return os;
+    }
+};
+
+int main()
+{
+    double sum = 0.0;
+    for (int i = 0; i < 10; i++)
+    {
+        double r;
+        std::cin >> r;
+        sphere sp(r);
+        std::cout << sp << std::endl;
+        sum += sp.get_volume();
+    }
+    double avg = sum / 10;
+    std::cout << "Average: " << avg << std::endl;
+    return 0;
+}
+#include <vector>
+#include <iostream>
+#include <algorithm>
+
+class document
+{
+protected:
+    std::vector<std::string> authors;
+    std::string date;
+
+public:
+    document(std::string a_date) : date(a_date) {}
+
+    std::vector<std::string> get_authors()
+    {
+        return authors;
+    }
+
+    std::string get_date()
+    {
+        return date;
+    }
+
+    void add_author(std::string name)
+    {
+        authors.push_back(name);
+    }
+
+    virtual std::string info() = 0;
+
+    bool operator<(const document &other) const
+    {
+        return this->authors[0] < other.authors[0];
+    }
+};
+
+class book : public document
+{
+private:
+    std::string title;
+
+public:
+    book(std::string a_date, std::string a_title) : document(a_date), title(a_title) {}
+
+    std::string get_title()
+    {
+        return title;
+    }
+
+    std::string info()
+    {
+        std::string s = "BOOK-> Title: " + title + " Date: " + date + " Authors: ";
+        for (std::string a : authors)
+        {
+            s += a + " ";
+        }
+        return s;
+    }
+};
+
+class email : public document
+{
+private:
+    std::string sender;
+    std::string subject;
+    std::vector<std::string> recipients;
+
+public:
+    email(std::string a_date, std::string a_sender, std::string a_subject) : document(a_date), sender(a_sender), subject(a_subject) {}
+
+    std::string get_sender()
+    {
+        return sender;
+    }
+
+    std::string get_subject()
+    {
+        return subject;
+    }
+
+    std::vector<std::string> get_recipients() { return recipients; }
+
+    void add_recipient(std::string name) { recipients.push_back(name); }
+
+    std::string info()
+    {
+        std::string s = "EMAIL-> Subject: " + subject + " Sender: " + sender + " Recipients: ";
+        for (std::string r : recipients)
+        {
+            s += r + " ";
+        }
+        s += "Date: " + date + " Authors: ";
+        for (std::string a : authors)
+        {
+            s += a + " ";
+        }
+        return s;
+    }
+};
+
+int main()
+{
+    book b1("1/1/2010", "book1");
+    b1.add_author("nikos");
+    b1.add_author("maria");
+    book b2("30/6/2015", "book2");
+    b2.add_author("kostas");
+    email e1("1/6/2017", "petros", "email1");
+    e1.add_author("petros");
+    e1.add_author("kostas");
+    e1.add_recipient("maria");
+    e1.add_recipient("nikos");
+
+    std::vector<document *> documents;
+    documents.push_back(&b1);
+    documents.push_back(&b2);
+    documents.push_back(&e1);
+
+    for (document *d : documents)
+    {
+        std::cout << d->info() << std::endl;
+    }
+
+    std::sort(documents.begin(), documents.end(), [](document *d1, document *d2) { return *d1 < *d2; });
+
+    std::cout << "SORTED LIST" << std::endl;
+
+    for (document *d : documents)
+    {
+        std::cout << d->info() << std::endl;
+    }
+
+    return 0;
+}#include <iostream>
+#include <ostream>
+#include <vector>
+#include <algorithm>
+
+class image
+{
+private:
+    int width;
+    int height;
+    int color_depth;
+
+public:
+    image(int w, int h, int cd) : width(w), height(h), color_depth(cd) {}
+
+    int get_color_depth()
+    {
+        return color_depth;
+    }
+
+    void set_color_depth(int cd)
+    {
+        color_depth = cd;
+    }
+
+    int get_size() const
+    {
+        return width * height * color_depth;
+    }
+
+    bool operator<(const image &other) const
+    {
+        return this->get_size() > other.get_size();
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const image &im)
+    {
+        os << "WIDTH:" << im.width << " HEIGHT: " << im.height << " COLOR DEPTH: " << im.color_depth << " SIZE: " << im.get_size();
+        return os;
+    }
+};
+
+int main()
+{
+    std::vector<image> images{{640, 360, 3}, {1024, 768, 2}, {800, 600, 4}, {1280, 1024, 2}};
+    std::sort(images.begin(), images.end());
+    std::cout << "SORTED" << std::endl;
+    for (image im : images)
+    {
+        std::cout << im << std::endl;
+    }
+
+    std::cout << "REVERSE SORTED" << std::endl;
+    for (auto itr = images.rbegin(); itr != images.rend(); itr++)
+    {
+        std::cout << *itr << std::endl;
+    }
+}#include <iostream>
+#include <vector>
+
+int get_flight_duration(std::string from, std::string to, std::string airplane_type)
+{
+    std::string data[5][4] = {
+        {"A", "B", "T1", "200"},
+        {"A", "B", "T2", "180"},
+        {"A", "C", "T1", "150"},
+        {"A", "C", "T2", "140"},
+        {"A", "D", "T2", "240"},
+    };
+    for (int i = 0; i < 5; i++)
+    {
+        if ((data[i][0] == from) && (data[i][1] == to) && (data[i][2] == airplane_type))
+        {
+            return stoi(data[i][3]);
+        }
+    }
+    return -1;
+}
+
+class flight
+{
+private:
+    int flight_number;
+    std::string from;
+    std::string to;
+    int duration;
+
+public:
+    flight(int fn, std::string f, std::string t, std::string airplane_type) : flight_number(fn), from(f), to(t)
+    {
+        duration = get_flight_duration(from, to, airplane_type);
+    }
+    void delay_flight(int minutes)
+    {
+        duration += minutes;
+    }
+    void display()
+    {
+        std::cout << "Flight [flight number: " << flight_number << " from: " << from << " to: " << to << " duration: " << duration << std::endl;
+    }
+};
+
+class plane
+{
+private:
+    std::string airplane_type;
+    int max_speed;
+    std::string tail_id;
+    std::vector<flight> flights;
+
+public:
+    plane(std::string type, int ms, std::string tid) : airplane_type(type), max_speed(ms), tail_id(tid) {}
+    void add_flight(flight &a_flight)
+    {
+        flights.push_back(a_flight);
+    }
+    void display()
+    {
+        std::cout << "Plane [type: " << airplane_type << " maximum speed: " << max_speed << " tail id: " << tail_id << "]" << std::endl;
+        for (flight f : flights)
+        {
+            f.display();
+        }
+    }
+};
+
+int main()
+{
+    plane p1("T1", 450, "AB100");
+    plane p2("T2", 500, "ZX900");
+
+    flight f1(1001, "A", "B", "T1");
+    flight f2(1002, "A", "C", "T1");
+    flight f3(1003, "A", "D", "T2");
+    f3.delay_flight(5);
+
+    p1.add_flight(f1);
+    p1.add_flight(f2);
+    p2.add_flight(f3);
+
+    p1.display();
+    p2.display();
+}
+#include <iostream>
+#include <string>
+#include <sstream>
+
+enum class ACCOUNT_TYPE
+{
+    CHECKING,
+    SAVINGS,
+    MONEY_MARKET
+};
+
+class account
+{
+private:
+    std::string owner;
+    double balance;
+    ACCOUNT_TYPE type;
+
+public:
+    static int nr_of_accounts;
+
+    // default constructor
+    account() : owner("Noname"), balance(0.0), type(ACCOUNT_TYPE::CHECKING)
+    {
+        account::nr_of_accounts++;
+    }
+
+    account(std::string s, double b, ACCOUNT_TYPE at) : owner(s), balance(b), type(at)
+    {
+        account::nr_of_accounts++;
+    }
+
+    // copy constructor
+    account(account &other) : owner(other.owner), balance(0.0), type(other.type)
+    {
+        account::nr_of_accounts++;
+    }
+
+    std::string get_owner()
+    {
+        return owner;
+    }
+
+    void set_owner(std::string owner_name)
+    {
+        owner = owner_name;
+    }
+
+    double get_balance()
+    {
+        return balance;
+    }
+
+    void set_balance(double b)
+    {
+        this->balance = b;
+    }
+
+    void deposit(double amount)
+    {
+        balance += amount;
+    }
+
+    double withdrawal(double amount)
+    {
+        if (amount <= balance)
+        {
+            balance -= amount;
+            return amount;
+        }
+        else
+        {
+            double temp = balance;
+            balance = 0.0;
+            return temp;
+        }
+    }
+
+    bool operator<(const account &other) const
+    {
+        return this->balance < other.balance;
+    }
+
+    operator std::string() const
+    {
+        std::stringstream ss;
+        ss << owner << " - " << balance << " - ";
+        if (type == ACCOUNT_TYPE::CHECKING)
+        {
+            ss << "checking";
+        }
+        else if (type == ACCOUNT_TYPE::SAVINGS)
+        {
+            ss << "savings";
+        }
+        else
+        {
+            ss << "money market";
+        }
+        return ss.str();
+    }
+};
+
+int account::nr_of_accounts = 0;
+
+int main()
+{
+    account acc1; // κλήση default constructor
+    account acc2("Ken Lay", 100000.0, ACCOUNT_TYPE::MONEY_MARKET);
+    account acc3 = acc2; // κλήση copy constructor
+    std::cout << "Number of accounts " << account::nr_of_accounts << std::endl;
+    double a;
+    std::cout << "Input amount to withdraw from account " << (std::string)acc2 << " ";
+    std::cin >> a;
+    a = acc2.withdrawal(a);
+    acc3.deposit(a * 0.8);
+    acc1.deposit(a * 0.2);
+    if (acc2 < acc3)
+    {
+        std::cout << (std::string)acc2 << std::endl;
+    }
+    else if (acc3 < acc2)
+    {
+        std::cout << (std::string)acc3 << std::endl;
+    }
+
+    return 0;
+}
+#include <iostream>
+
+class vehicle
+{
+protected:
+    std::string registration_number;
+    std::string owner_name;
+    double cc;
+
+public:
+    vehicle(std::string rn, std::string on, double cc) : registration_number(rn), owner_name(on), cc(cc) {}
+    virtual ~vehicle() {}
+    virtual double traffic_tax() = 0;
+};
+
+class car : public vehicle
+{
+private:
+    int number_of_doors;
+
+public:
+    car(std::string rn, std::string on, double cc, int nod) : vehicle(rn, on, cc), number_of_doors(nod) {}
+    double traffic_tax()
+    {
+        if (cc <= 1000.0)
+        {
+            return 140.0;
+        }
+        else
+        {
+            return 140.0 + (int)((cc - 1000.0) / 100.0) * 10.0;
+        }
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const car &a_car)
+    {
+        os << a_car.registration_number << "-"
+           << a_car.owner_name << "-"
+           << a_car.cc << "-"
+           << a_car.number_of_doors;
+        return os;
+    }
+};
+
+class truck : public vehicle
+{
+private:
+    double max_weight;
+
+public:
+    truck(std::string rn, std::string on, double cc, double mw) : vehicle(rn, on, cc), max_weight(mw) {}
+    double traffic_tax()
+    {
+        if (max_weight <= 3000.0)
+        {
+            return 300.0;
+        }
+        else if (max_weight <= 6000.0)
+        {
+            return 400.0;
+        }
+        else
+        {
+            return 600.0;
+        }
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const truck &a_truck)
+    {
+        os << a_truck.registration_number << "-"
+           << a_truck.owner_name << "-"
+           << a_truck.cc << "-"
+           << a_truck.max_weight;
+        return os;
+    }
+};
+
+double total_tax(vehicle *v[5])
+{
+    double sum = 0.0;
+    for (int i = 0; i < 5; i++)
+    {
+        sum += v[i]->traffic_tax();
+    }
+    return sum;
+}
+
+int main()
+{
+    vehicle *a[5];
+    for (int i = 0; i < 5; i++)
+    {
+        std::cout << "Input type of vehicle (car=1/truck=2): ";
+        int t;
+        std::cin >> t;
+        if (t == 1)
+        {
+            std::string rn, on;
+            double cc;
+            int nod;
+            std::cout << "Enter registration number, owner name, cubic centimeters, number of doors: ";
+            std::cin >> rn >> on >> cc >> nod;
+            a[i] = new car(rn, on, cc, nod);
+        }
+        else
+        {
+            std::string rn, on;
+            double cc, mw;
+            std::cout << "Enter registration number, owner name, cubic centimeters, maximum weight: ";
+            std::cin >> rn >> on >> cc >> mw;
+            a[i] = new truck(rn, on, cc, mw);
+        }
+    }
+
+    std::cout << "\nTOTAL TAX " << total_tax(a) << std::endl;
+
+    for (int i = 0; i < 5; i++)
+    {
+        delete a[i];
+    }
+
+    return 0;
+}
+#include <iostream>
+#include <vector>
+
+template <class T>
+int find_occurrences(std::vector<T> v, T k)
+{
+    int c = 0;
+    for (int i = 0; i < v.size(); i++)
+    {
+        if (v[i] == k)
+        {
+            c++;
+        }
+    }
+    return c;
+}
+
+struct point
+{
+    int x;
+    int y;
+};
+
+bool operator==(point &p1, point &p2)
+{
+    return (p1.x == p2.x && p1.y == p2.y);
+}
+
+int main()
+{
+    std::vector<int> v1{0, 1, 2, 3, 1, 5, 6, 1, 8, 9};
+    std::cout << "1. " << find_occurrences(v1, 1) << std::endl;
+
+    std::vector<double> v2{0.5, 1.5, 2.5, 3.5, 1.5, 5.5, 6.5, 1.5, 8.5, 9.5};
+    std::cout << "2. " << find_occurrences(v2, 1.5) << std::endl;
+
+    std::vector<point> v3{{1, 1}, {3, 5}, {1, 1}, {2, 3}, {1, 1}};
+    std::cout << "3. " << find_occurrences(v3, {1, 1}) << std::endl;
+
+    return 0;
+}
+#include <iostream>
+#include <string>
+#include <vector>
+
+class person
+{
+private:
+    std::string name;
+
+public:
+    person(){};
+    person(std::string n) : name(n) {}
+    std::string get_name() const
+    {
+        return name;
+    }
+};
+
+class movie
+{
+private:
+    std::string title;
+    int year;
+    person director;
+    std::vector<person> actors;
+
+public:
+    movie(std::string t) : title(t) {}
+
+    void set_director(const person &p)
+    {
+        director = p;
+    }
+
+    void add_cast(const person &p)
+    {
+        actors.push_back(p);
+    }
+
+    void display_info() const
+    {
+        std::cout << title << " ";
+        std::cout << "directed by " << director.get_name() << std::endl;
+        std::cout << "Cast:" << std::endl;
+        for (auto p : actors)
+        {
+            std::cout << p.get_name() << std::endl;
+        }
+    }
+};
+
+int main()
+{
+    person d1("Director 1");
+    person d2("Director 2");
+    person a1("Actor 1");
+    person a2("Actor 2");
+    person a3("Actor 3");
+    movie m1("Movie 1");
+    movie m2("Movie 2");
+
+    m1.set_director(d1);
+    m2.set_director(d2);
+    m1.add_cast(a1);
+    m1.add_cast(a2);
+    m2.add_cast(a2);
+    m2.add_cast(a3);
+
+    m1.display_info();
+    m2.display_info();
+
+    return 0;
+}
+
+/*
+Movie 1 directed by Director 1
+Cast:
+Actor 1
+Actor 2
+Movie 2 directed by Director 2
+Cast:
+Actor 2
+Actor 3
+*/#include <iostream>
+#include <vector>
+#include <string>
+#include <random>
+#include <ostream>
+#include <algorithm>
+
+std::random_device rd;
+std::mt19937 engine{rd()};
+std::uniform_real_distribution<double> distribution(0.0, 1.0);
+
+class player
+{
+private:
+    std::string name;
+    double dexterity;
+    std::vector<player> wins;
+
+public:
+    player(std::string n, double d) : name(n), dexterity(d) {}
+
+    double get_dexterity()
+    {
+        return dexterity;
+    }
+
+    std::vector<player> get_wins()
+    {
+        return wins;
+    }
+
+    void add_win(const player &p)
+    {
+        wins.push_back(p);
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const player &aplayer)
+    {
+        os << aplayer.name << " " << aplayer.dexterity;
+        return os;
+    }
+};
+
+class duel
+{
+private:
+    std::vector<player> players;
+
+public:
+    duel(int n)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            std::string name = "player" + std::to_string(i + 1);
+            double dex = distribution(engine) * 100.0;
+            player p(name, dex);
+            players.push_back(p);
+        }
+    }
+
+    void next_round()
+    {
+        std::cout << "************* NEXT ROUND ***************" << std::endl;
+        std::cout << "SHUFFLE" << std::endl;
+        std::shuffle(players.begin(), players.end(), engine);
+        display_players();
+        std::vector<player> winners;
+        for (int i = 0; i < players.size() / 2; i++)
+        {
+            player p1 = players[i];
+            player p2 = players[players.size() - 1 - i];
+            std::cout << "Duel: " << p1 << " vs " << p2 << " -> ";
+            double perc_win_p1 = p1.get_dexterity() / (p1.get_dexterity() + p2.get_dexterity());
+            double roulette = distribution(engine);
+            if (perc_win_p1 > roulette)
+            {
+                std::cout << p1 << " WINS!" << std::endl;
+                p1.add_win(p2);
+                winners.push_back(p1);
+            }
+            else
+            {
+                std::cout << p2 << " WINS!" << std::endl;
+                p2.add_win(p1);
+                winners.push_back(p2);
+            }
+        }
+        if (players.size() % 2 == 1)
+        {
+            winners.push_back(players[players.size() / 2]);
+        }
+        players = winners;
+    }
+
+    std::vector<player> get_players()
+    {
+        return players;
+    }
+
+    void display_players()
+    {
+        for (auto p : players)
+        {
+            std::cout << p << std::endl;
+        }
+    }
+};
+
+int main(int argc, char *argv[])
+{
+    int n = 100;
+    if (argc != 2)
+    {
+        std::cout << "No argument given, assuming " << n << " players " << std::endl;
+    }
+    else
+    {
+        n = atoi(argv[1]);
+    }
+    duel d(n);
+    d.display_players();
+    while (d.get_players().size() != 1)
+    {
+        d.next_round();
+    }
+    player winner = d.get_players()[0];
+    std::cout << "Winner: " << d.get_players()[0] << std::endl;
+    std::cout << "List of wins:" << std::endl;
+    for (player p : winner.get_wins())
+    {
+        std::cout << "vs " << p << std::endl;
+    }
+    return 0;
+}
+#include <vector>
+#include <iostream>
+
+// forward declaration για την lab_class
+class lab_class;
+
+class student
+{
+private:
+    std::string name;
+    lab_class *lc; // πρέπει να δηλωθεί pointer, αλλιώς incomplete type error λόγω forward declaration
+
+public:
+    student(std::string name) : name(name), lc(nullptr) {}
+
+    std::string get_name()
+    {
+        return name;
+    }
+
+    lab_class *get_lab_class()
+    {
+        return lc;
+    }
+
+    void set_lab_class(lab_class *lc)
+    {
+        this->lc = lc;
+    }
+};
+
+class lab_class
+{
+private:
+    std::string id;
+    std::vector<student> enrolled_students;
+
+public:
+    lab_class(std::string id) : id(id) {}
+
+    std::string get_id()
+    {
+        return id;
+    }
+
+    // εγγραφή φοιτητή σε τμήμα (μόνο αν ο φοιτητής δεν έχει ήδη εγγραφεί σε κάποιο άλλο τμήμα)
+    void enroll(student &s)
+    {
+        if (s.get_lab_class() == nullptr)
+        {
+            // προσοχή στη σειρά με την οποία γράφονται οι ακόλουθες 2 εντολές
+            s.set_lab_class(this);
+            enrolled_students.push_back(s);
+            std::cout << "Student " << s.get_name() << " enrolls at " << id << std::endl;
+        }
+        else
+        {
+            std::cerr << "Student " << s.get_name() << " has already been enrolled !!!" << std::endl;
+        }
+    }
+
+    void display_enrolled_students()
+    {
+        std::cout << "Lab: " << id << " # of students: " << enrolled_students.size() << std::endl;
+        for (student &s : enrolled_students)
+        {
+            std::cout << s.get_name() << " - ";
+            if (s.get_lab_class() == nullptr)
+            {
+                std::cout << "UNASSIGNED" << std::endl;
+            }
+            else
+            {
+                std::cout << s.get_lab_class()->get_id() << std::endl;
+            }
+        }
+    }
+};
+
+int main()
+{
+    student s1("kostas");
+    student s2("maria");
+    student s3("petros");
+    student s4("christina");
+    student s5("tasos");
+
+    lab_class oop1_lab("OOP1");
+    lab_class oop2_lab("OOP2");
+
+    oop1_lab.enroll(s1);
+    oop1_lab.enroll(s3);
+    oop2_lab.enroll(s4);
+    oop2_lab.enroll(s5);
+    oop2_lab.enroll(s1); // δεν θα πραγματοποιηθεί η εγγραφή, είναι ήδη εγγεγραμμένος σε άλλο τμήμα
+
+    oop1_lab.display_enrolled_students();
+    oop2_lab.display_enrolled_students();
+
+    return 0;
+}#include <vector>
+#include <iostream>
+
+// forward declaration για την lab_class
+class lab_class;
+
+class student
+{
+private:
+    std::string name;
+    lab_class *lc; // πρέπει να δηλωθεί pointer, αλλιώς incomplete type error λόγω forward declaration
+
+public:
+    student(std::string name) : name(name), lc(nullptr) {}
+
+    std::string get_name()
+    {
+        return name;
+    }
+
+    lab_class *get_lab_class()
+    {
+        return lc;
+    }
+
+    void set_lab_class(lab_class *lc)
+    {
+        this->lc = lc;
+    }
+};
+
+class lab_class
+{
+private:
+    std::string id;
+    std::vector<student *> enrolled_students;
+
+public:
+    lab_class(std::string id) : id(id) {}
+
+    std::string get_id()
+    {
+        return id;
+    }
+
+    // εγγραφή φοιτητή σε τμήμα (μόνο αν ο φοιτητής δεν έχει ήδη εγγραφεί σε κάποιο άλλο τμήμα)
+    void enroll(student *s)
+    {
+        if (s->get_lab_class() == nullptr)
+        {
+            s->set_lab_class(this);
+            enrolled_students.push_back(s);
+            std::cout << "Student " << s->get_name() << " enrolls at " << id << std::endl;
+        }
+        else
+        {
+            std::cerr << "Student " << s->get_name() << " has already been enrolled !!!" << std::endl;
+        }
+    }
+
+    void display_enrolled_students()
+    {
+        std::cout << "Lab: " << id << " # of students: " << enrolled_students.size() << std::endl;
+        for (student *s : enrolled_students)
+        {
+            std::cout << s->get_name() << " - ";
+            if (s->get_lab_class() == nullptr)
+            {
+                std::cout << "UNASSIGNED" << std::endl;
+            }
+            else
+            {
+                std::cout << s->get_lab_class()->get_id() << std::endl;
+            }
+        }
+    }
+};
+
+int main()
+{
+    student s1("kostas");
+    student s2("maria");
+    student s3("petros");
+    student s4("christina");
+    student s5("tasos");
+
+    lab_class oop1_lab("OOP1");
+    lab_class oop2_lab("OOP2");
+
+    oop1_lab.enroll(&s1);
+    oop1_lab.enroll(&s3);
+    oop2_lab.enroll(&s4);
+    oop2_lab.enroll(&s5);
+    oop2_lab.enroll(&s1); // δεν θα πραγματοποιηθεί η εγγραφή, είναι ήδη εγγεγραμμένος σε άλλο τμήμα
+
+    oop1_lab.display_enrolled_students();
+    oop2_lab.display_enrolled_students();
+
+    return 0;
+}#include <iostream>
+#include <vector>
+#include <algorithm>
+
+class person
+{
+protected:
+    std::string name;
+    std::string day_of_birth;
+
+public:
+    person(std::string n, std::string dob) : name(n), day_of_birth(dob) {}
+
+    virtual ~person() {}
+
+    virtual std::string info() = 0;
+
+    std::string get_name()
+    {
+        return name;
+    }
+};
+
+class employee : public person
+{
+protected:
+    std::string acct_no; // αριθμός λογαριασμού
+public:
+    employee(std::string n, std::string dob, std::string an) : 
+       person(n, dob), acct_no(an) {}
+
+    virtual std::string info()
+    {
+        return "Name: " + name + " DOB: " + day_of_birth + " ACCOUNT_NO: " + acct_no;
+    }
+};
+
+class professor : public employee
+{
+private:
+    std::vector<std::string> specializations;
+
+public:
+    professor(std::string n, std::string dob, std::string an) : employee(n, dob, an) {}
+    void add_specialization(std::string specialization)
+    {
+        specializations.push_back(specialization);
+    }
+    std::string info()
+    {
+        std::string s = employee::info();
+        s += " Specializations: ";
+        for (std::string sp : specializations)
+        {
+            s += sp + " ";
+        }
+        return s + " (PROFESSOR)";
+    }
+};
+
+class administrative_employee : public employee
+{
+private:
+    int years_of_experience;
+
+public:
+    administrative_employee(std::string n, std::string dob, std::string an, int yoe) : 
+      employee(n, dob, an), years_of_experience(yoe) {}
+
+    std::string info()
+    {
+        return employee::info() + " Experience: " + std::to_string(years_of_experience) + " (ADMINISTRATIVE EMPLOYEE)";
+    }
+};
+
+class student : public person
+{
+private:
+    int semester;
+
+public:
+    student(std::string n, std::string dob, int sem) : person(n, dob), semester(sem) {}
+
+    std::string info()
+    {
+        return "Name: " + name + " DOB: " + day_of_birth + " SEMESTER: " + std::to_string(semester) + " (STUDENT)";
+    }
+};
+
+int main()
+{
+    employee emp("Nikos", "1/1/1980", "0001");
+    std::cout << emp.info() << std::endl;
+
+    professor prof("Maria", "1/6/1965", "0002");
+    prof.add_specialization("Algorithms");
+    prof.add_specialization("Artificial Intelligence");
+    prof.add_specialization("Mathematics");
+    std::cout << prof.info() << std::endl;
+
+    administrative_employee adm_emp("Kostas", "2/4/1985", "0003", 10);
+    std::cout << adm_emp.info() << std::endl;
+
+    student stu("Georgia", "1/3/2003", 2);
+    std::cout << stu.info() << std::endl;
+
+    std::cout << "List of persons" << std::endl;
+    std::vector<person *> persons;
+    persons.push_back(&emp);
+    persons.push_back(&prof);
+    persons.push_back(&adm_emp);
+    persons.push_back(&stu);
+
+    std::sort(persons.begin(), persons.end(),
+              [](person *p1, person *p2) { return (p1->get_name() < p2->get_name()); });
+
+    for (person *p : persons)
+    {
+        std::cout << p->info() << std::endl;
+    }
+
+    return 0;
+}
+
+/*
+Name: Nikos DOB: 1/1/1980 ACCOUNT_NO: 0001
+Name: Maria DOB: 1/6/1965 ACCOUNT_NO: 0002 Specializations: Algorithms Artificial Intelligence Mathematics  (PROFESSOR)
+Name: Kostas DOB: 2/4/1985 ACCOUNT_NO: 0003 Experience: 10 (ADMINISTRATIVE EMPLOYEE)
+Name: Georgia DOB: 1/3/2003 SEMESTER: 2 (STUDENT)
+List of persons
+Name: Georgia DOB: 1/3/2003 SEMESTER: 2 (STUDENT)
+Name: Kostas DOB: 2/4/1985 ACCOUNT_NO: 0003 Experience: 10 (ADMINISTRATIVE EMPLOYEE)
+Name: Maria DOB: 1/6/1965 ACCOUNT_NO: 0002 Specializations: Algorithms Artificial Intelligence Mathematics  (PROFESSOR)
+Name: Nikos DOB: 1/1/1980 ACCOUNT_NO: 0001
+*/#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+class person
+{
+private:
+    string name;
+    double weight; // kilograms
+    double height; // meters
+public:
+    person(string n, double w, double h) : name(n), weight(w), height(h) {}
+    double get_BMI() const
+    {
+        return weight / (height * height);
+    }
+    string get_category() const
+    {
+        double bmi = get_BMI();
+        if (bmi <= 18.5)
+        {
+            return "underweight";
+        }
+        else if (bmi <= 24.9)
+        {
+            return "normal";
+        }
+        else if (bmi <= 29.9)
+        {
+            return "overweight";
+        }
+        else
+        {
+            return "obese";
+        }
+    }
+    bool operator<(const person &other) const
+    {
+        return name < other.name;
+    }
+
+    friend ostream &operator<<(ostream &os, const person &p)
+    {
+        os << p.name << " [" << p.weight << "," << p.height << "]";
+        return os;
+    }
+};
+
+int main()
+{
+    vector<person> v;
+    v.push_back({"nikos", 90.5, 1.82});
+    v.push_back({"andreas", 100.7, 1.72});
+    v.push_back({"petros", 60.5, 1.85});
+
+    cout << "Sorted by name" << endl;
+    sort(v.begin(), v.end());
+    for (const auto &p : v)
+    {
+        cout << p << " " << p.get_BMI() << " " << p.get_category() << endl;
+    }
+
+    cout << "Sorted by BMI" << endl;
+    sort(v.begin(), v.end(), [](const person &p1, const person &p2) { return p1.get_BMI() < p2.get_BMI(); });
+    for (auto it = v.begin(); it != v.end(); ++it)
+    {
+        cout << *it << " " << it->get_BMI() << " " << it->get_category() << endl;
+    }
+}
+
+/*
+Sorted by name
+andreas [100.7,1.72] 34.0387 obese
+nikos [90.5,1.82] 27.3216 overweight
+petros [60.5,1.85] 17.6771 underweight
+Sorted by BMI
+petros [60.5,1.85] 17.6771 underweight
+nikos [90.5,1.82] 27.3216 overweight
+andreas [100.7,1.72] 34.0387 obese
+*/#include <iostream>
+#include <ostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+class rectangle
+{
+private:
+    double width;
+    double height;
+
+public:
+    rectangle(double w, double h) : width(w), height(h) {}
+    double area() const
+    {
+        return width * height;
+    }
+    bool operator<(const rectangle &other) const
+    {
+        return area() < other.area();
+    }
+    friend ostream &operator<<(ostream &os, const rectangle &r)
+    {
+        os << "with:" << r.width << " height:" << r.height << " area:" << r.area();
+        return os;
+    }
+};
+
+
+int main(){
+    vector<rectangle> v{{7.,1.3}, {3.2,2.2}, {5.1, 5.}, {2.7, 3.3}, {6.1, 1.2}};
+    double sum = 0.0;
+    for(rectangle r: v){
+        sum += r.area();
+    }
+    cout << "1. TOTAL AREA=" << sum << endl;
+    
+    cout << "2. SORT BY AREA"  << endl;
+    sort(v.begin(), v.end());
+    for(rectangle r: v){
+        cout << r << endl;
+    }
+    cout << "3. SORT BY AREA DESC"  << endl;
+    sort(v.begin(), v.end(), [](rectangle r1, rectangle r2){return r1.area()>r2.area();});
+    for(rectangle r: v){
+        cout << r << endl;
+    }
+    cout << "4. COUNT RECTANGLES HAVING AREA > AVG AREA"  << endl;
+    int c=0;
+    for(rectangle r: v){
+        if (r.area() > sum / v.size()){
+            c++;
+        }
+    }
+    cout << c << endl;
+}
+
+/*
+1. TOTAL AREA=57.87
+2. SORT BY AREA
+with:3.2 height:2.2 area:7.04
+with:6.1 height:1.2 area:7.32
+with:2.7 height:3.3 area:8.91
+with:7 height:1.3 area:9.1   
+with:5.1 height:5 area:25.5  
+3. SORT BY AREA DESC
+with:5.1 height:5 area:25.5  
+with:7 height:1.3 area:9.1   
+with:2.7 height:3.3 area:8.91
+with:6.1 height:1.2 area:7.32
+with:3.2 height:2.2 area:7.04
+4. COUNT RECTANGLES HAVING AREA > AVG AREA
+1
+*/#include <iostream>
+
+using namespace std;
+
+class Sphere
+{
+private:
+    double radius;
+
+public:
+    Sphere(double r) : radius(r) {}
+    double get_radius()
+    {
+        return radius;
+    }
+    void set_radius(double r)
+    {
+        radius = r;
+    }
+    double get_volume()
+    {
+        return 4.0 / 3.0 * 3.14159 * radius * radius * radius;
+    }
+    friend ostream &operator<<(ostream &os, Sphere &s)
+    {
+        return os << "RADIUS=" << s.radius << " VOLUME=" << s.get_volume();
+    }
+};
+
+int main()
+{
+    double sum = .0;
+    for (int i = 0; i < 5; i++)
+    {
+        double r;
+        cout << "Enter radius of sphere: ";
+        cin >> r;
+        Sphere s(r);
+        cout << s << endl;
+        sum += s.get_volume();
+    }
+    cout << sum / 5.0 << endl;
+}
+
+/*
+Enter radius of sphere: 1
+RADIUS=1 VOLUME=4.18879
+Enter radius of sphere: 2
+RADIUS=2 VOLUME=16.7551
+Enter radius of sphere: 3
+RADIUS=3 VOLUME=37.6991
+Enter radius of sphere: 4
+RADIUS=4 VOLUME=67.0206
+Enter radius of sphere: 5
+RADIUS=5 VOLUME=104.72
+46.0767
+*/#include <iostream>
+class A {
+public:
+  int x = 1;
+};
+
+class C {
+public:
+  int y = 2;
+};
+
+class B : public A {
+public:
+  int z = 3;
+  C c_obj;
+
+  void fun() { std::cout << x << c_obj.y << z; }
+};
+
+int main() {
+  B obj;
+  obj.fun();
+}
+#include <iostream>
+
+using namespace std;
+
+template <class T> 
+T fun(T a, T b, T c) {
+  T min = a;
+  if (b < min)
+    min = b;
+  if (c < min)
+    min = c;
+  return min;
+}
+
+int main() {
+  std::cout << fun(42, 36, 19) << std::endl;
+  std::cout << fun(string("arta"), string("ioannina"), string("preveza")) << std::endl; // μετατροπή c-strings σε std::string αντικείμενα για να γίνεται ορθά η σύγκριση με τον τελεστή < 
+}
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+    vector<int> v{46, 23, 78, 81, 95};
+    sort(v.begin(), v.end(), greater<int>());
+    for (vector<int>::iterator itr = v.begin(); itr != v.end(); itr++)
+    {
+        cout << *itr << endl;
+    }
+    int c = count_if(v.begin(), v.end(), [](int x)
+                     { return x % 2 == 0; });
+    cout << "plithos artiwn timwn = " << c << endl;
+}
+
+/*
+95
+81
+78
+46
+23
+plithos artiwn timwn = 2
+*/#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <sstream>
+#include <string>
+
+using namespace std;
+
+class document
+{
+protected:
+    vector<string> authors;
+    string date;
+
+public:
+    document(string a_date) : date(a_date) {}
+
+    vector<string> get_authors()
+    {
+        return authors;
+    }
+
+    string get_date()
+    {
+        return date;
+    }
+
+    void add_author(string name)
+    {
+        authors.push_back(name);
+    }
+
+    virtual string info() = 0;
+
+    bool operator<(document &other)
+    {
+        return authors[0] < other.authors[0];
+    }
+};
+
+class book : public document
+{
+private:
+    string title;
+
+public:
+    book(string a_date, string a_title) : document(a_date), title(a_title) {}
+    string get_title() { return title; }
+    string info()
+    {
+        stringstream ss;
+        ss << "Title: " << title;
+        ss << " Date: " << date;
+        ss << " Authors: ";
+        for (string a : authors)
+        {
+            ss << a << " ";
+        }
+        return ss.str();
+    }
+};
+
+class email : public document
+{
+private:
+    string sender;
+    string subject;
+    vector<string> recipients;
+
+public:
+    email(string a_date, string a_sender, string a_subject) : document(a_date), sender(a_sender), subject(a_subject) {}
+    string get_sender()
+    {
+        return sender;
+    }
+    string get_subject()
+    {
+        return subject;
+    }
+    vector<string> get_recipients()
+    {
+        return recipients;
+    }
+    void add_recipient(string recipient)
+    {
+        recipients.push_back(recipient);
+    }
+    string info()
+    {
+        stringstream ss;
+        ss << "Sender: " << sender;
+        ss << " Subject: " << subject;
+        ss << " Recipients: ";
+        for (string s : recipients)
+        {
+            ss << s << " ";
+        }
+        ss << "Date: " << date;
+        ss << " Authors: ";
+        for (string a : authors)
+        {
+            ss << a << " ";
+        }
+        return ss.str();
+    }
+};
+
+int main()
+{
+    book b1("1/1/2010", "book1");
+    b1.add_author("nikos");
+    b1.add_author("maria");
+    book b2("30/6/2015", "book2");
+    b2.add_author("kostas");
+
+    email e1("1/6/2017", "petros", "email1");
+    e1.add_author("petros");
+    e1.add_author("kostas");
+    e1.add_recipient("maria");
+    e1.add_recipient("nikos");
+
+    vector<document *> v;
+    v.push_back(&b1);
+    v.push_back(&b2);
+    v.push_back(&e1);
+
+    sort(v.begin(), v.end(), [](auto d1, auto d2)
+         { return *d1 < *d2; });
+
+    cout << "SORTED BY FIRST AUTHOR NAME" << endl;
+
+    for (auto d : v)
+    {
+        cout << d->info() << endl;
+    }
+}#include <iostream>
+#include <vector>
+
+template <class T>
+void two_maxes(std::vector<T> v, T &max1, T &max2)
+{
+    if (v[0] > v[1])
+    {
+        max1 = v[0];
+        max2 = v[1];
+    }
+    else
+    {
+        max2 = v[0];
+        max1 = v[1];
+    }
+    for (int i = 2; i < v.size(); i++)
+    {
+        if (v[i] > max1)
+        {
+            max2 = max1;
+            max1 = v[i];
+        }
+        else if (v[i] > max2)
+        {
+            max2 = v[i];
+        }
+    }
+}
+
+class student
+{
+public:
+    std::string name;
+    double grade;
+    bool operator>(const student &other)
+    {
+        return grade > other.grade;
+    }
+    friend std::ostream &operator<<(std::ostream &os, const student &a_student)
+    {
+        os << a_student.name << " - " << a_student.grade;
+        return os;
+    }
+};
+
+int main()
+{
+    std::vector<int> v1{5, 6, 3, 1, 7, 8, 7, 3};
+    int max1, max2;
+    two_maxes(v1, max1, max2);
+    std::cout << max1 << " - " << max2 << std::endl;
+
+    std::vector<student> v2{{"maria", 7.1}, {"petros", 8.2}, {"ioanna", 9.3}, {"nikos", 5.2}};
+    student max_s1, max_s2;
+    two_maxes(v2, max_s1, max_s2);
+    std::cout << max_s1 << " - " << max_s2 << std::endl;
+
+    return 0;
+}
+#include <iostream>
+
+class person
+{
+protected:
+    int age;
+
+public:
+    static int nr_of_persons;
+
+    person(int a) : age(a) { nr_of_persons++; }
+
+    virtual double compute_earnings() = 0;
+    virtual ~person() {}
+};
+
+class teacher : public person
+{
+private:
+    std::string profession;
+
+public:
+    teacher(int a, std::string p) : person(a), profession(p) {}
+    double compute_earnings()
+    {
+        return 1000.0;
+    }
+};
+
+class footballer : public person
+{
+private:
+    std::string team;
+
+public:
+    footballer(int a, std::string t) : person(a), team(t) {}
+    double compute_earnings()
+    {
+        return 100000.0;
+    }
+};
+
+int person::nr_of_persons = 0;
+
+int main()
+{
+    person *persons[5];
+    for (int i = 0; i < 5; i++)
+    {
+        std::cout << "Teacher or footballer (teacher=1/footballer=2): ";
+        int choice;
+        std::cin >> choice;
+        if (choice == 1)
+        {
+            int age;
+            std::string prof;
+            std::cout << "Enter age: ";
+            std::cin >> age;
+            std::cout << "Enter profession: ";
+            std::cin >> prof;
+            persons[i] = new teacher(age, prof);
+        }
+        else
+        {
+            int age;
+            std::string team;
+            std::cout << "Enter age: ";
+            std::cin >> age;
+            std::cout << "Enter team: ";
+            std::cin >> team;
+            persons[i] = new footballer(age, team);
+        }
+    }
+
+    std::cout << "Number of persons: " << person::nr_of_persons << std::endl;
+
+    for (int i = 0; i < 5; i++)
+    {
+        std::cout << persons[i]->compute_earnings() << std::endl;
+        delete persons[i];
+    }
+
+    return 0;
+}
+#include <iostream>
+#include <vector>
+#include <sstream>
+
+template <class T>
+int occurences_of_min(std::vector<T> v)
+{
+    T min = v[0];
+    int c = 1;
+    for (int i = 1; i < v.size(); i++)
+    {
+        if (v[i] < min)
+        {
+            c = 1;
+            min = v[i];
+        }
+        else if (v[i] == min)
+        {
+            c++;
+        }
+    }
+    return c;
+}
+
+class player
+{
+public:
+    std::string name;
+    int time_played;
+    bool operator<(const player &other)
+    {
+        return time_played < other.time_played;
+    }
+    bool operator==(const player &other)
+    {
+        return time_played == other.time_played;
+    }
+    operator std::string() const
+    {
+        std::stringstream ss;
+        ss << name << " - " << time_played;
+        return ss.str();
+    }
+};
+
+int main()
+{
+    std::vector<int> v1{1, 6, 3, 1, 7, 8, 1, 3};
+    int oc1 = occurences_of_min(v1);
+    std::cout << "1. Result=" << oc1 << std::endl;
+
+    std::vector<player> v2{{"nikos", 53}, {"petros", 68}, {"kostas", 53}, {"john", 54}};
+    int oc2 = occurences_of_min(v2);
+    std::cout << "2. Result=" << oc2 << std::endl;
+    for (int i = 0; i < v2.size(); i++)
+    {
+        std::cout << (std::string)v2[i] << std::endl;
+    }
+
+    return 0;
+}
+
+/*
+1. Result=3
+2. Result=2
+nikos - 53
+petros - 68
+kostas - 53
+john - 54
+*/#include <iostream>
+
+class task
+{
+private:
+    int from;
+    int to;
+    std::string description;
+
+public:
+    task(int f, int t, std::string d) : from(f), to(t), description(d) {}
+
+    std::string get_description()
+    {
+        return description;
+    }
+
+    void set_description(std::string s)
+    {
+        description = s;
+    }
+
+    bool has_conflict(task &other) const
+    {
+        return !(to <= other.from || other.to <= from);
+    }
+
+    friend std::ostream &operator<<(std::ostream &os, const task &t)
+    {
+        os << t.description << " (" << t.from << " - " << t.to << ")";
+        return os;
+    }
+};
+
+int main()
+{
+    task tasks[4]={  task(1,4,"task1"), 
+                    task(4,9,"task2"), 
+                    task(8,11,"task3"), 
+                    task(12,14,"task4")};
+    for(int i=0;i<4;i++){
+        bool f=true;
+        for(int j=0;j<4;j++){
+            if (i!=j && tasks[i].has_conflict(tasks[j])) {
+                f=false;
+            }
+        }
+        if (f)
+            std::cout << tasks[i] << std::endl;
+    }
+    return 0;
+}
+// Εισαγωγή ονομάτων, 
+// ταξινόμηση ονομάτων, 
+// ταξινόμηση ονομάτων σε φθίνουσα σειρά,
+// ταξινόμηση ονομάτων σε φθίνουσα σειρά πλήθους χαρακτήρων, 
+// διαγραφή ονομάτων με κάτω από 6 χαρακτήρες
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+int main()
+{
+    vector<string> names;
+    names.push_back("Nikos");
+    names.push_back("Christoforos");
+    names.push_back("Orestis");
+    names.push_back("Maria");
+    names.push_back("Penelope");
+
+    for (string n : names)
+        cout << n << endl;
+
+    cout << "###############" << endl;
+    // Ταξινόμηση σε αύξουσα αλφαβητική σειρά
+    sort(names.begin(), names.end());
+    for (string n : names)
+        cout << n << endl;
+
+    cout << "###############" << endl;
+    // Ταξινόμηση σε φθίνουσα αλφαβητική σειρά
+    sort(
+        names.begin(), names.end(), [](string n1, string n2)
+        { return n1 > n2; });
+    for (string n : names)
+        cout << n << endl;
+
+    cout << "###############" << endl;
+    // Ταξινόμηση κατά μήκος ονόματος
+    sort(
+        names.begin(), names.end(), [](string n1, string n2)
+        { return n1.length() < n2.length(); });
+    for (string n : names)
+        cout << n << endl;
+
+    cout << "###############" << endl;
+    // Διαγραφή όλων των ονομάτων με μήκος μικρότερο από 6
+    vector<string>::iterator itr = remove_if(names.begin(), names.end(), [](string n)
+                                             { return n.length() < 6; });
+    names.erase(itr, names.end());
+    // ή erase remove idiom
+    // names.erase(remove_if(names.begin(), names.end(), [](string n)
+    //                       { return n.length() < 6; }),
+    //             names.end());
+    for (string n : names)
+        cout << n << endl;
+}
+
+/*
+Nikos
+Christoforos
+Orestis
+Maria
+Penelope
+###############
+Christoforos
+Maria
+Nikos
+Orestis
+Penelope
+###############
+Penelope
+Orestis
+Nikos
+Maria
+Christoforos
+###############
+Nikos
+Maria
+Orestis
+Penelope
+Christoforos
+###############
+Orestis
+Penelope
+Christoforos
+*/
